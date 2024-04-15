@@ -11,6 +11,7 @@
         <Image Source="dotnet_bot.svg" WidthRequest="120" Margin="10"></Image>
     </Shell.FlyoutHeader>
 
+
     <ShellContent
         Icon="home.svg"
         Title="Inicio"
@@ -18,28 +19,39 @@
         Route="MainPage" />
 
     <ShellContent
-     Icon="ticket.svg"
-    Title="Categorias"
-    ContentTemplate="{DataTemplate pages:CategoriasPage}"
-    Route="CategoriasPage" />
+        Icon="ticket.svg"
+        Title="Categorias"
+        ContentTemplate="{DataTemplate pages:CategoriasPage}"
+        Route="CategoriasPage" />
 
     <ShellContent
         Icon="clipboard.svg"
-       Title="Inventario"
-       ContentTemplate="{DataTemplate pages:InventarioPage}"
-       Route="InventarioPage" />
+        Title="Inventario"
+        ContentTemplate="{DataTemplate pages:InventarioPage}"
+        Route="InventarioPage" />
 
     <ShellContent
-    Icon="shopping_cart.svg"
-   Title="Venta"
-   ContentTemplate="{DataTemplate pages:VentaPage}"
-   Route="VentaPage" />
+        Icon="shopping_cart.svg"
+        Title="Venta"
+        ContentTemplate="{DataTemplate pages:VentaPage}"
+        Route="VentaPage" />
 
     <ShellContent
-     Icon="time.svg"
-    Title="Historial Venta"
-    ContentTemplate="{DataTemplate pages:HistoriaVentaPage}"
-    Route="HistoriaVentaPage" />
+        Icon="time.svg"
+        Title="Historial Venta"
+        ContentTemplate="{DataTemplate pages:HistoriaVentaPage}"
+        Route="HistoriaVentaPage" />
+
+    <ShellContent
+    Route="RegisterPage"
+    ContentTemplate="{DataTemplate pages:RegisterPage}"
+    Title="Registrar"
+    Icon="register_icon.svg" />
+
+    <ShellContent Route="login"
+                  ContentTemplate="{DataTemplate pages:LoginPage}"
+                  Title="Login" />
+
 
     <MenuItem IconImageSource="stand_by.svg" Text="Cerrar Sesión" Clicked="CerrarSesion_Clicked">
     </MenuItem>

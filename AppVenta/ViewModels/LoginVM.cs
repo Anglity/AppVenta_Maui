@@ -28,5 +28,13 @@ namespace AppVenta.ViewModels
                 await Application.Current.MainPage.DisplayAlert("Mensaje", "No se encontraron coincidencias", "Aceptar");
             }
         }
+
+        [RelayCommand]
+        private async Task Register()
+        {
+            // Cambia la MainPage a RegisterPage directamente
+            Application.Current.MainPage = new NavigationPage(new AppVenta.Pages.RegisterPage());
+        }
+
     }
 }
