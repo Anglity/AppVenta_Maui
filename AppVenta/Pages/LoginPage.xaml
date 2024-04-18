@@ -1,40 +1,147 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
              x:Class="AppVenta.Pages.LoginPage"
              xmlns:vm="clr-namespace:AppVenta.ViewModels"
              Title="LoginPage"
              BackgroundColor="#F0F4F8">
 
+
     <ContentPage.BindingContext>
         <vm:LoginVM/>
     </ContentPage.BindingContext>
 
-    <Grid VerticalOptions="Start" HorizontalOptions="FillAndExpand" Padding="20">
+    <Grid
+            BackgroundColor="#1C375C"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
-        <!-- Imagen más grande y situada más arriba -->
-        <Image Grid.Row="0" Source="iniciarsesion.png" HorizontalOptions="Center" VerticalOptions="Start" HeightRequest="150" WidthRequest="150" Margin="0,20,0,0"/>
-
-        <!-- Bienvenida con letra mejorada -->
-        <StackLayout Grid.Row="1" Orientation="Vertical" Spacing="10" HorizontalOptions="Center">
-            <Label Text="‼Bienvenido‼" TextColor="#101010" FontSize="32" FontAttributes="Bold" Margin="5,10,0,0"/>
-            <Label Text="Ingrese sus credenciales" TextColor="LightSlateGray" FontSize="Small" HorizontalOptions="Center"/>
-            <Label Text="*Usuario:  Admin" TextColor="LightSlateGray" FontSize="Small" HorizontalOptions="Center"/>
-            <Label Text="*Contraseña:  123" TextColor="LightSlateGray" FontSize="Small" HorizontalOptions="Center"/>
+        <StackLayout Grid.Row="0" HorizontalOptions="Center">
+            <Image
+        Margin="0,30"
+        Aspect="AspectFit"
+        HeightRequest="100"
+        Source="iniciarsesion.png"
+        WidthRequest="80" />
         </StackLayout>
 
-        <!-- Entradas y botones con espaciado optimizado -->
-        <StackLayout Grid.Row="2" Orientation="Vertical" Spacing="10" HorizontalOptions="FillAndExpand" Padding="30,10">
-            <Entry Text="{Binding Usuario}" Placeholder="Usuario" Margin="0,5"/>
-            <Entry Text="{Binding Password}" Placeholder="Contraseña" IsPassword="True" Margin="0,5"/>
-            <Button Text="Iniciar sesión" HeightRequest="50" BackgroundColor="#1d94ab" TextColor="White" FontAttributes="Bold" Command="{Binding LoginCommand}"/>
-            <Button Text="Crear cuenta" HeightRequest="50" FontSize="Medium" BackgroundColor="#009688" TextColor="White" FontAttributes="Bold" Command="{Binding RegisterCommand}" />
+        <Frame
+                Grid.Row="1"
+                Margin="0,0,0,-40"
+                BorderColor="#1C375C"
+                CornerRadius="50"
+                HasShadow="True"
+                HeightRequest="700">
+            <Grid
+                    Padding="20,50,20,0"
+                    HorizontalOptions="FillAndExpand"
+                    RowSpacing="20"
+                    VerticalOptions="FillAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label
+                        Grid.Row="0"
+                        FontAttributes="Bold"
+                        FontSize="24"
+                        HorizontalOptions="CenterAndExpand"
+                        Text="Welcome Back!"
+                        TextColor="#1C375C" />
+                <Label
+                        Grid.Row="1"
+                        Margin="0,-15,0,0"
+                        HorizontalOptions="CenterAndExpand"
+                        Text="Login in to account"
+                        TextColor="#1C375C" />
+                <Entry
+                        Grid.Row="2"
+                        Margin="0,20,0,0"
+                        HorizontalOptions="FillAndExpand"
+                        Placeholder="Username"
+                        Text="{Binding UserName}"
+                        VerticalOptions="FillAndExpand" />
+                <Entry
+                        Grid.Row="3"
+                        HorizontalOptions="FillAndExpand"
+                        IsPassword="True"
+                        Placeholder="Password"
+                        Text="{Binding UserPassword}"
+                        VerticalOptions="FillAndExpand" />
 
-        </StackLayout>
+                <Button
+                Grid.Row="4"
+                BackgroundColor="#1C375C"
+                Command="{Binding LoginCommand}" 
+                    CornerRadius="20"
+                Text="Login" />
+
+                    <Button
+                Grid.Row="5"
+                BackgroundColor="#1C375C"
+                Command="{Binding RegisterCommand}" 
+                        CornerRadius="20"
+                Text="Register using Email" />
+
+
+
+                        <Label
+                        Grid.Row="5"
+                        HorizontalOptions="CenterAndExpand"
+                        Text="or signin with" />
+                <StackLayout
+                        Grid.Row="6"
+                        HorizontalOptions="CenterAndExpand"
+                        Orientation="Horizontal"
+                        Spacing="40">
+                    <Image
+                            Aspect="AspectFit"
+                            HeightRequest="30"
+                            Source="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo626DNKJxdHM-VNRD0m7x_8Jim-r9kRalJQ"
+                            WidthRequest="30" />
+                    <Image
+                            Aspect="AspectFit"
+                            HeightRequest="30"
+                            Source="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnLfAn36-LTYNHjioWgvu-0KUTIDDrW5lX_g"
+                            WidthRequest="30" />
+                    <ImageButton
+                            Aspect="AspectFit"
+                            HeightRequest="30"
+                            Source="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-icon-png-transparent-background-osteopathy-16.png"
+                            Command="{Binding LoginWithGoogleCommand}"
+                            BackgroundColor="Transparent"
+                          
+                            WidthRequest="30" />
+                    <Image
+                            Aspect="AspectFit"
+                            HeightRequest="30"
+                            Source="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+                            WidthRequest="30" />
+                </StackLayout>
+                <Label
+                        Grid.Row="7"
+                        FontAttributes="Bold"
+                        HorizontalOptions="CenterAndExpand"
+                        Text="Forget Password" />
+                <Label
+                        Grid.Row="8"
+                        Margin="0,-10,0,0"
+                        HorizontalOptions="CenterAndExpand"
+                        Text="Don't have an account? Sign up here" />
+            </Grid>
+        </Frame>
     </Grid>
+
+
 </ContentPage>

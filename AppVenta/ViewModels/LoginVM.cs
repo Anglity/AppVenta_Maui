@@ -1,16 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace AppVenta.ViewModels
 {
     public partial class LoginVM : ObservableObject
     {
+
+
+
         [ObservableProperty]
         public string usuario = string.Empty;
         [ObservableProperty]
@@ -63,6 +62,38 @@ namespace AppVenta.ViewModels
             Application.Current.MainPage = new NavigationPage(new AppVenta.Pages.RegisterPage());
         }
 
+
+        private const string RedirectUri = "myapp://";
+
+        [RelayCommand]
+        private async Task LoginWithGoogle()
+        {
+            try
+            {
+                // Construye la URL para la autenticación de Google
+                var authUrl = new Uri($"https://accounts.google.com/o/oauth2/v2/auth?client_id={_firebaseApiKey}&redirect_uri={RedirectUri}&response_type=token&scope=email");
+                var callbackUrl = new Uri(RedirectUri);
+
+                var authResult = await WebAuthenticator.AuthenticateAsync(authUrl, callbackUrl);
+
+                // Verifica si se ha recibido un token de acceso
+                if (!string.IsNullOrEmpty(authResult?.AccessToken))
+                {
+                    // Almacenar el token o realizar acciones adicionales según sea necesario
+                    Preferences.Set("accessToken", authResult.AccessToken);
+
+                    // Navegar a la página principal de la aplicación
+                    Application.Current.MainPage = new AppShell();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores de autenticación
+                await Application.Current.MainPage.DisplayAlert("Authentication Failed", $"An error occurred: {ex.Message}", "OK");
+            }
+        }
+
+
     }
 
     public class FirebaseLoginResponse
@@ -70,4 +101,9 @@ namespace AppVenta.ViewModels
         public string IdToken { get; set; }
         // Otros campos de respuesta que puedas necesitar
     }
+
+
+
+
+
 }
