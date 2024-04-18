@@ -1,5 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AppVenta.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Threading.Tasks;
 
 namespace AppVenta.ViewModels
 {
@@ -7,15 +10,20 @@ namespace AppVenta.ViewModels
     {
         [ObservableProperty]
         private string nombre;
-
         [ObservableProperty]
         private string email;
-
         [ObservableProperty]
         private string password;
-
         [ObservableProperty]
         private string confirmPassword;
+
+        private FirebaseAuthService _firebaseAuthService;
+
+        public RegisterViewModel()
+        {
+            // Asegúrate de tener el apiKey correcto
+            _firebaseAuthService = new FirebaseAuthService("AIzaSyA2cI0MIlrCtznp4rt9kdbIbGePo3ARcms");
+        }
 
         [RelayCommand]
         public async Task Register()
@@ -33,23 +41,26 @@ namespace AppVenta.ViewModels
                 return;
             }
 
-            // Aquí iría la lógica para registrar el usuario, por ejemplo, añadir a la base de datos
-            await App.Current.MainPage.DisplayAlert("Éxito", "Usuario registrado correctamente.", "OK");
-            // Navegar a otra página si es necesario
+            try
+            {
+                var user = await _firebaseAuthService.RegisterUserAsync(Email, Password);
+                await App.Current.MainPage.DisplayAlert("Éxito", "Usuario registrado correctamente.", "OK");
+                // Navegar a otra página si es necesario
+            }
+            catch (Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+            }
         }
 
         [RelayCommand]
         public async Task GoBack()
         {
-            // Muestra un mensaje al usuario antes de cambiar de página
             bool shouldGoBack = await App.Current.MainPage.DisplayAlert("Confirmar", "¿Deseas volver al inicio de sesión?", "Sí", "No");
-
             if (shouldGoBack)
             {
-                // Si el usuario confirma, cambia la MainPage a LoginPage directamente
                 Application.Current.MainPage = new NavigationPage(new AppVenta.Pages.LoginPage());
             }
         }
-
     }
 }
