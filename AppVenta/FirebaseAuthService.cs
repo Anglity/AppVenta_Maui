@@ -16,7 +16,7 @@ namespace AppVenta.Services
             _httpClient = new HttpClient();
         }
 
-        public async Task<string> RegisterUserAsync(string email, string password)
+        public async Task RegisterUserAsync(string email, string password)
         {
             var signUpUrl = $"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={_firebaseApiKey}";
             var userData = new
@@ -31,22 +31,51 @@ namespace AppVenta.Services
 
             if (!response.IsSuccessStatusCode)
             {
-                // Aquí puedes lanzar una excepción o manejar el error como prefieras.
                 var errorContent = await response.Content.ReadAsStringAsync();
+                var errorResult = JsonSerializer.Deserialize<FirebaseErrorResponse>(errorContent);
+
+                if (errorResult?.Error?.Message == "EMAIL_EXISTS")
+                {
+                    // Manejo específico del error EMAIL_EXISTS
+                    throw new Exception("Una cuenta con este correo electrónico ya existe.");
+                }
+
                 throw new Exception($"Error registering user: {errorContent}");
             }
 
-            var resultContent = await response.Content.ReadAsStringAsync();
-            // Asumiendo que quieres el IdToken resultante, pero podrías querer manejar toda la respuesta.
-            var result = JsonSerializer.Deserialize<FirebaseRegisterResponse>(resultContent);
-            return result?.IdToken;
+            // Aquí ya no devolvemos el IdToken.
+            // Si no lo necesitas para nada más, no tienes que hacer nada más aquí.
         }
-    }
 
-    public class FirebaseRegisterResponse
-    {
-        public string IdToken { get; set; }
-        public string Email { get; set; }
-        // Agrega otros campos de respuesta si es necesario.
+
+
+
+        public class FirebaseErrorResponse
+        {
+            public FirebaseError Error { get; set; }
+        }
+
+        public class FirebaseError
+        {
+            public int Code { get; set; }
+            public string Message { get; set; }
+            public FirebaseErrorDetails[] Errors { get; set; }
+        }
+
+        public class FirebaseErrorDetails
+        {
+            public string Message { get; set; }
+            public string Domain { get; set; }
+            public string Reason { get; set; }
+        }
+
+        public class FirebaseRegisterResponse
+        {
+            public string IdToken { get; set; }
+            public string Email { get; set; }
+            public string RefreshToken { get; set; }
+            public string ExpiresIn { get; set; }
+            // Agrega otros campos de respuesta si es necesario.
+        }
     }
 }

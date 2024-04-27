@@ -1,8 +1,10 @@
 ﻿using AppVenta.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Firebase.Database;
 using System;
 using System.Threading.Tasks;
+
 
 namespace AppVenta.ViewModels
 {
@@ -17,11 +19,12 @@ namespace AppVenta.ViewModels
         [ObservableProperty]
         private string confirmPassword;
 
+        private FirebaseDatabaseService _firebaseDatabaseService;
         private FirebaseAuthService _firebaseAuthService;
 
         public RegisterViewModel()
         {
-            // Asegúrate de tener el apiKey correcto
+            _firebaseDatabaseService = new FirebaseDatabaseService();
             _firebaseAuthService = new FirebaseAuthService("AIzaSyA2cI0MIlrCtznp4rt9kdbIbGePo3ARcms");
         }
 
@@ -29,9 +32,15 @@ namespace AppVenta.ViewModels
         public async Task Register()
         {
             if (string.IsNullOrEmpty(Nombre) || string.IsNullOrEmpty(Email) ||
-                string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(ConfirmPassword))
+        string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(ConfirmPassword))
             {
                 await App.Current.MainPage.DisplayAlert("Error", "Todos los campos son obligatorios.", "OK");
+                return;
+            }
+
+            if (Password.Length < 8)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "La contraseña debe tener al menos 8 caracteres.", "OK");
                 return;
             }
 
@@ -43,13 +52,29 @@ namespace AppVenta.ViewModels
 
             try
             {
-                var user = await _firebaseAuthService.RegisterUserAsync(Email, Password);
-                await App.Current.MainPage.DisplayAlert("Éxito", "Usuario registrado correctamente.", "OK");
-                // Navegar a otra página si es necesario
+                // Proceder con el registro de autenticación de Firebase
+                await _firebaseAuthService.RegisterUserAsync(Email, Password);
+
+                // Si el registro es exitoso, guarda la información adicional del usuario
+                await _firebaseDatabaseService.SaveUserAsync(Nombre, Email, Password);
+
+                // Notificar al usuario que el registro fue exitoso
+                await App.Current.MainPage.DisplayAlert("Éxito", "Usuario registrado correctamente. Por favor, verifica tu email.", "OK");
+
+                // Navegar a la página principal de la aplicación
+                Application.Current.MainPage = new AppShell(); // Reemplazar con la página principal de tu aplicación
             }
             catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+                // Asumiendo que el FirebaseAuthService lanza una excepción con un mensaje claro cuando el email ya existe.
+                if (ex.Message.Contains("EMAIL_EXISTS"))
+                {
+                    await App.Current.MainPage.DisplayAlert("Error", "El correo electrónico ya está en uso por otra cuenta.", "OK");
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Error", "Error al registrar: " + ex.Message, "OK");
+                }
             }
         }
 
