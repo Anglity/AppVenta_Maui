@@ -1,147 +1,110 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
-             x:Class="AppVenta.Pages.LoginPage"
              xmlns:vm="clr-namespace:AppVenta.ViewModels"
+             x:Class="AppVenta.Pages.LoginPage"
              Title="LoginPage"
-             BackgroundColor="#F0F4F8">
-
+             BackgroundColor="#34495E">
 
     <ContentPage.BindingContext>
         <vm:LoginVM/>
     </ContentPage.BindingContext>
 
-    <Grid
-            BackgroundColor="#1C375C"
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="FillAndExpand">
+    <ContentPage.Resources>
+        <Style x:Key="EntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="PlaceholderColor" Value="#BDC3C7"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style x:Key="LabelStyle" TargetType="Label">
+            <Setter Property="TextColor" Value="#ECF0F1"/>
+            <Setter Property="HorizontalOptions" Value="Center"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="20" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackLayout Grid.Row="0" HorizontalOptions="Center">
-            <Image
-        Margin="0,30"
-        Aspect="AspectFit"
-        HeightRequest="100"
-        Source="iniciarsesion.png"
-        WidthRequest="80" />
-        </StackLayout>
 
-        <Frame
-                Grid.Row="1"
-                Margin="0,0,0,-40"
-                BorderColor="#1C375C"
-                CornerRadius="50"
-                HasShadow="True"
-                HeightRequest="700">
-            <Grid
-                    Padding="20,50,20,0"
-                    HorizontalOptions="FillAndExpand"
-                    RowSpacing="20"
-                    VerticalOptions="FillAndExpand">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Label
-                        Grid.Row="0"
-                        FontAttributes="Bold"
-                        FontSize="24"
-                        HorizontalOptions="CenterAndExpand"
-                        Text="Welcome Back!"
-                        TextColor="#1C375C" />
-                <Label
-                        Grid.Row="1"
-                        Margin="0,-15,0,0"
-                        HorizontalOptions="CenterAndExpand"
-                        Text="Login in to account"
-                        TextColor="#1C375C" />
-                <Entry
-                        Grid.Row="2"
-                        Margin="0,20,0,0"
-                        HorizontalOptions="FillAndExpand"
-                        Placeholder="Username"
-                        Text="{Binding UserName}"
-                        VerticalOptions="FillAndExpand" />
-                <Entry
-                        Grid.Row="3"
-                        HorizontalOptions="FillAndExpand"
-                        IsPassword="True"
-                        Placeholder="Password"
-                        Text="{Binding UserPassword}"
-                        VerticalOptions="FillAndExpand" />
+        <Image Grid.Row="0"
+               Margin="0"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               Aspect="AspectFit"
+               HeightRequest="185"
+               Source="logo.png"
+               AutomationProperties.Name="Logo"/>
 
-                <Button
-                Grid.Row="4"
-                BackgroundColor="#1C375C"
-                Command="{Binding LoginCommand}" 
-                    CornerRadius="20"
-                Text="Login" />
+        <Frame Grid.Row="1"
+               Margin="0, -30, 0, 0"
+               Padding="20"
+               BackgroundColor="#2C3E50"
+               BorderColor="Transparent"
+               CornerRadius="30"
+               HasShadow="True"
+               VerticalOptions="FillAndExpand">
+            <ScrollView>
+                <StackLayout Spacing="15">
+                    <Label Text="Bienvenido"
+                           FontSize="26"
+                           HorizontalOptions="Center"
+                           TextColor="White"
+                           Margin="0, 10, 0, 20"/>
+                    <Label Text="Inicia sesión ahora"
+                           FontSize="18"
+                           HorizontalOptions="Center"
+                           TextColor="#BDC3C7"/>
 
-                    <Button
-                Grid.Row="5"
-                BackgroundColor="#1C375C"
-                Command="{Binding RegisterCommand}" 
-                        CornerRadius="20"
-                Text="Register using Email" />
+                    <Frame BackgroundColor="#22313F" CornerRadius="25" Padding="10" HasShadow="False" Margin="10">
+                        <Entry Placeholder="Correo electrónico"
+                               Style="{StaticResource EntryStyle}"
+                               Text="{Binding Usuario, Mode=TwoWay}"/>
+                        <!-- Corregido de UserName a Usuario -->
+                    </Frame>
+                    <Frame BackgroundColor="#22313F" CornerRadius="25" Padding="10" HasShadow="False" Margin="10">
+                        <Entry Placeholder="Contraseña"
+                               Style="{StaticResource EntryStyle}"
+                               IsPassword="True"
+                               Text="{Binding Password, Mode=TwoWay}"/>
+                        <!-- Corregido de UserPassword a Password -->
+                    </Frame>
 
+                    <Button Text="Ingresar"
+                            BackgroundColor="#E74C3C"
+                            TextColor="White"
+                            CornerRadius="25"
+                            FontSize="18"
+                            Command="{Binding LoginCommand}"
+                            IsEnabled="{Binding IsLoginEnabled}"
+                            Margin="10, 20"/>
 
+                    <Label Style="{StaticResource LabelStyle}" Text="Olvidé mi contraseña" Margin="5"/>
+                        <Label Style="{StaticResource LabelStyle}" Text="Continuar con" Margin="5"/>
 
-                        <Label
-                        Grid.Row="5"
-                        HorizontalOptions="CenterAndExpand"
-                        Text="or signin with" />
-                <StackLayout
-                        Grid.Row="6"
-                        HorizontalOptions="CenterAndExpand"
-                        Orientation="Horizontal"
-                        Spacing="40">
-                    <Image
-                            Aspect="AspectFit"
-                            HeightRequest="30"
-                            Source="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo626DNKJxdHM-VNRD0m7x_8Jim-r9kRalJQ"
-                            WidthRequest="30" />
-                    <Image
-                            Aspect="AspectFit"
-                            HeightRequest="30"
-                            Source="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnLfAn36-LTYNHjioWgvu-0KUTIDDrW5lX_g"
-                            WidthRequest="30" />
-                    <ImageButton
-                            Aspect="AspectFit"
-                            HeightRequest="30"
-                            Source="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-icon-png-transparent-background-osteopathy-16.png"
-                            Command="{Binding LoginWithGoogleCommand}"
-                            BackgroundColor="Transparent"
-                          
-                            WidthRequest="30" />
-                    <Image
-                            Aspect="AspectFit"
-                            HeightRequest="30"
-                            Source="https://cdn-icons-png.flaticon.com/512/174/174857.png"
-                            WidthRequest="30" />
+                        <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="Center"
+                                 Spacing="20">
+                            <Image Source="google.png" HeightRequest="40" WidthRequest="40" AutomationProperties.Name="Google"/>
+                            <Image Source="facebook.png" HeightRequest="40" WidthRequest="40" AutomationProperties.Name="Facebook"/>
+                        </StackLayout>
+
+                    <Button Text="Registrar"
+                            BackgroundColor="#3498DB"
+                            TextColor="White"
+                            CornerRadius="25"
+                            FontSize="18"
+                            Command="{Binding RegisterCommand}"
+                            IsEnabled="{Binding IsRegisterEnabled}"
+                            Margin="10, 20"/>
+
+                    <Label Style="{StaticResource LabelStyle}" Text="¿No tienes una cuenta? Regístrate aquí" Margin="5"/>
                 </StackLayout>
-                <Label
-                        Grid.Row="7"
-                        FontAttributes="Bold"
-                        HorizontalOptions="CenterAndExpand"
-                        Text="Forget Password" />
-                <Label
-                        Grid.Row="8"
-                        Margin="0,-10,0,0"
-                        HorizontalOptions="CenterAndExpand"
-                        Text="Don't have an account? Sign up here" />
-            </Grid>
+            </ScrollView>
         </Frame>
     </Grid>
-
-
 </ContentPage>

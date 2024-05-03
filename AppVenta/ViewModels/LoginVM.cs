@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Firebase.Database;
 using System.Text;
 using System.Text.Json;
 
@@ -8,50 +9,69 @@ namespace AppVenta.ViewModels
     public partial class LoginVM : ObservableObject
     {
 
-
-
         [ObservableProperty]
         public string usuario = string.Empty;
         [ObservableProperty]
         public string password = string.Empty;
 
         private readonly string _firebaseApiKey = "AIzaSyA2cI0MIlrCtznp4rt9kdbIbGePo3ARcms";
+        private readonly FirebaseDatabaseService _firebaseDatabaseService;  // Instancia de tu servicio Firebase
+
+        public LoginVM()
+        {
+            _firebaseDatabaseService = new FirebaseDatabaseService();  // Asegúrate de instanciar el servicio aquí
+        }
 
         [RelayCommand]
         private async Task Login()
         {
-            if (string.IsNullOrWhiteSpace(Usuario) || string.IsNullOrWhiteSpace(Password))
+            // Utiliza Trim() para eliminar espacios al inicio y al final.
+            if (string.IsNullOrWhiteSpace(Usuario?.Trim()) || string.IsNullOrWhiteSpace(Password?.Trim()))
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Por favor, ingrese su usuario y contraseña.", "Aceptar");
                 return;
             }
 
-            var signInUrl = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={_firebaseApiKey}";
-            var userData = new
+            try
             {
-                email = Usuario,
-                password = Password,
-                returnSecureToken = true
-            };
+                var signInUrl = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={_firebaseApiKey}";
+                var userData = new
+                {
+                    email = Usuario,
+                    password = Password,
+                    returnSecureToken = true
+                };
 
-            var content = new StringContent(JsonSerializer.Serialize(userData), Encoding.UTF8, "application/json");
+                var content = new StringContent(JsonSerializer.Serialize(userData), Encoding.UTF8, "application/json");
 
-            using var httpClient = new HttpClient();
-            var response = await httpClient.PostAsync(signInUrl, content);
+                using var httpClient = new HttpClient();
+                var response = await httpClient.PostAsync(signInUrl, content);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var resultContent = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<FirebaseLoginResponse>(resultContent);
-                // Aquí asumimos que quieres guardar el token o alguna identificación del usuario
-                Preferences.Set("idToken", result?.IdToken);
+                if (response.IsSuccessStatusCode)
+                {
+                    var resultContent = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<FirebaseLoginResponse>(resultContent);
+                    Preferences.Set("idToken", result?.IdToken);
 
-                Application.Current.MainPage = new AppShell();
+                    // Verifica la existencia del usuario usando el email proporcionado
+                    var userExists = await _firebaseDatabaseService.UserExistsAsync(Usuario, Usuario);
+                    if (!userExists)
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Error", "Usuario no encontrado o credenciales incorrectas.", "Aceptar");
+                        return;
+                    }
+
+                    Application.Current.MainPage = new AppShell();
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    await Application.Current.MainPage.DisplayAlert("Error", $"Inicio de sesión fallido: {errorContent}", "Aceptar");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                await Application.Current.MainPage.DisplayAlert("Error", $"Inicio de sesión fallido: {errorContent}", "Aceptar");
+                await Application.Current.MainPage.DisplayAlert("Error", $"Error al iniciar sesión: {ex.Message}", "Aceptar");
             }
         }
 

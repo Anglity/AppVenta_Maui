@@ -4,40 +4,66 @@
              xmlns:vm="clr-namespace:AppVenta.ViewModels"
              x:Class="AppVenta.Pages.RegisterPage"
              Title="Registrar"
-             BackgroundColor="#F0F4F8">
+             BackgroundColor="#EDEDED">
+    <!-- Color de fondo actualizado -->
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PrimaryTextColor">#003366</Color>
+            <Color x:Key="SecondaryTextColor">DarkSlateGray</Color>
+            <Color x:Key="PrimaryButtonColor">#4e8d7c</Color>
+            <Color x:Key="SecondaryButtonColor">#6ea8a1</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.BindingContext>
         <vm:RegisterViewModel/>
     </ContentPage.BindingContext>
 
-    <Grid VerticalOptions="Center" HorizontalOptions="FillAndExpand" Padding="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <ScrollView>
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="20">
 
-        <!-- Imagen decorativa en la parte superior -->
-        <Image Grid.Row="0" Source="crearusuario.png" HorizontalOptions="Center" HeightRequest="120" WidthRequest="120" Margin="0,10,0,0"/>
+            <Image Source="crearusuario.png" WidthRequest="100" HeightRequest="100" Aspect="AspectFit" Margin="0,0,0,10"/>
 
-        <!-- Título y formulario de registro -->
-        <StackLayout Grid.Row="1" Orientation="Vertical" Spacing="10" HorizontalOptions="Center">
-            <Label Text="🌟 Registrar 🌟" TextColor="#101010" FontSize="32" FontAttributes="Bold" Margin="5,10,0,0"/>
-            <Label Text="Complete los siguientes campos:" TextColor="LightSlateGray" FontSize="Small" HorizontalOptions="Center"/>
+            <Label Text="Registrar" TextColor="{DynamicResource PrimaryTextColor}" FontSize="32" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+            <Label Text="Complete los siguientes campos:" TextColor="{DynamicResource SecondaryTextColor}" FontSize="Medium" HorizontalOptions="Center"/>
+
+            <StackLayout Orientation="Vertical" Spacing="15" HorizontalOptions="FillAndExpand" Padding="30,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="person_icon.png" HeightRequest="24" WidthRequest="24" VerticalOptions="Center" Margin="0,0,5,0"/>
+                    <Entry Grid.Column="1" Placeholder="Nombre completo" Text="{Binding Nombre}" FontSize="Medium"/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="email_icon.png" HeightRequest="24" WidthRequest="24" VerticalOptions="Center" Margin="0,0,5,0"/>
+                    <Entry Grid.Column="1" Placeholder="Email" Text="{Binding Email}" Keyboard="Email" FontSize="Medium"/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="lock_icon.png" HeightRequest="24" WidthRequest="24" VerticalOptions="Center" Margin="0,0,5,0"/>
+                    <Entry Grid.Column="1" Placeholder="Contraseña" Text="{Binding Password}" IsPassword="True" FontSize="Medium"/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="lock_icon.png" HeightRequest="24" WidthRequest="24" VerticalOptions="Center" Margin="0,0,5,0"/>
+                    <Entry Grid.Column="1" Placeholder="Confirmar Contraseña" Text="{Binding ConfirmPassword}" IsPassword="True" FontSize="Medium"/>
+                </Grid>
+                <Button Text="Registrar" Command="{Binding RegisterCommand}" HeightRequest="50" BackgroundColor="{DynamicResource PrimaryButtonColor}" TextColor="White" FontAttributes="Bold" Margin="0,10,0,5" CornerRadius="20"/>
+                <Button Text="Volver" Command="{Binding GoBackCommand}" HeightRequest="50" BackgroundColor="{DynamicResource SecondaryButtonColor}" TextColor="White" FontAttributes="Bold" CornerRadius="20"/>
+            </StackLayout>
         </StackLayout>
-
-        <!-- Entradas y botón de registro -->
-        <StackLayout Grid.Row="2" Orientation="Vertical" Spacing="10" HorizontalOptions="FillAndExpand" Padding="30,10">
-            <Entry Placeholder="Nombre completo" Text="{Binding Nombre}" Margin="0,5"/>
-            <Entry Placeholder="Email" Text="{Binding Email}" Keyboard="Email" Margin="0,5"/>
-            <Entry Placeholder="Contraseña" Text="{Binding Password}" IsPassword="True" Margin="0,5"/>
-            <Entry Placeholder="Confirmar Contraseña" Text="{Binding ConfirmPassword}" IsPassword="True" Margin="0,5"/>
-            <Button Text="Registrar" Command="{Binding RegisterCommand}" HeightRequest="50" BackgroundColor="#1d94ab" TextColor="White" FontAttributes="Bold"/>
-            <Button Text="Volver"
-        Command="{Binding GoBackCommand}"
-        BackgroundColor="#009688"
-        TextColor="White"
-        FontAttributes="Bold" />
-        </StackLayout>
-    </Grid>
+    </ScrollView>
 </ContentPage>

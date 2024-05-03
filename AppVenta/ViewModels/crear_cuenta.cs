@@ -1,15 +1,15 @@
 ﻿using AppVenta.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Firebase.Database;
-using System;
-using System.Threading.Tasks;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 
 namespace AppVenta.ViewModels
 {
     public partial class RegisterViewModel : ObservableObject
     {
+        private readonly string SendGridApiKey = "O91BTtvjShuHD23KotWHdQ";
         [ObservableProperty]
         private string nombre;
         [ObservableProperty]
@@ -21,6 +21,9 @@ namespace AppVenta.ViewModels
 
         private FirebaseDatabaseService _firebaseDatabaseService;
         private FirebaseAuthService _firebaseAuthService;
+
+
+
 
         public RegisterViewModel()
         {
@@ -55,6 +58,9 @@ namespace AppVenta.ViewModels
                 // Proceder con el registro de autenticación de Firebase
                 await _firebaseAuthService.RegisterUserAsync(Email, Password);
 
+                // Enviar correo electrónico de verificación
+                await SendVerificationEmail(Email);
+
                 // Si el registro es exitoso, guarda la información adicional del usuario
                 await _firebaseDatabaseService.SaveUserAsync(Nombre, Email, Password);
 
@@ -77,6 +83,35 @@ namespace AppVenta.ViewModels
                 }
             }
         }
+
+        private async Task SendVerificationEmail(string email)
+        {
+            var client = new SendGridClient(SendGridApiKey);
+            var from = new EmailAddress("edwinesp19@gmail.com", "Tu Nombre o Compañía");
+            var to = new EmailAddress(email);
+            var templateId = "d-346a2dcbf259464694024fe537b1c29d "; // Reemplaza con el ID real de tu plantilla
+
+            // No necesitas subject ni contenido porque ya están definidos en la plantilla
+            var msg = new SendGridMessage()
+            {
+                From = from,
+                TemplateId = templateId
+            };
+
+            msg.AddTo(to);
+
+            // Puedes pasar dinámicamente los datos a tu plantilla
+            msg.SetTemplateData(new
+            {
+                codigoVerificacion = "123456" // Suponiendo que tienes un campo de código de verificación en tu plantilla
+            });
+
+            var response = await client.SendEmailAsync(msg);
+        }
+
+
+
+
 
         [RelayCommand]
         public async Task GoBack()
